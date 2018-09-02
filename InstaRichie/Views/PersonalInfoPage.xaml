@@ -1,4 +1,9 @@
-﻿<Page
+﻿<!--
+* @author Pablo Paramo
+*
+* @date - 27 Aug 2018
+-->
+    <Page
     x:Class="StartFinance.Views.PersonalInfoPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,6 +12,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"  
     xmlns:controls="using:Template10.Controls"
+    Loaded="Page_Loaded"
     xmlns:vm="using:StartFinance.ViewModels">
 
 
@@ -17,11 +23,11 @@
 
 
     <Page.Resources>
-        <DataTemplate x:Key="WishListDataViews">
+        <DataTemplate x:Key="PersonalInfoDataViews">
             <Grid>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{Binding WishName}" Padding="0,0,15,0"/>
-                    <TextBlock Text="{Binding Money}"/>
+                    <TextBlock Text="{Binding firstNamo}" Padding="0,0,15,0"/>
+                    <TextBlock Text="{Binding lastName}"/>
                 </StackPanel>
             </Grid>
         </DataTemplate>
@@ -83,6 +89,8 @@
             <!--primary commands-->
             <controls:PageHeader.PrimaryCommands>
                 <AppBarButton Icon="Accept" Label="Add Personal Info" Click="AddPersonalInfo_Click"/>
+                <AppBarButton Icon="Back" Label="Modify Personal Info" Click="ModifyPersonalInfo_Click"/>
+                
                 <AppBarButton Icon="Delete" Label="Delete Delete Personal Info" Click="DeletePersonalInfo_Click"/>
             </controls:PageHeader.PrimaryCommands>
         </controls:PageHeader>
@@ -91,19 +99,21 @@
         <Pivot>
             <RelativePanel.Below>pageHeader</RelativePanel.Below>
             <RelativePanel.Above>pageFooter</RelativePanel.Above>
-            <PivotItem Header="Add Personal Information">
+            <PivotItem Header="Personal Information">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="450"/>
+                        <RowDefinition Height="440"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <StackPanel Grid.Row="0"
+                    <StackPanel x:Name="_DOB" Grid.Row="0"
                             Orientation="Vertical" VerticalAlignment="Stretch"
                             HorizontalAlignment="Stretch">
                         <TextBox x:Name="_FirstName" PlaceholderText="Enter First Name" Header="First Name"/>
                         <TextBox x:Name="_LastName" Header="Last Name" PlaceholderText="Enter Last Name" TextWrapping="Wrap" InputScope="Text"/>
 
-                        <TextBox x:Name="_DOB" Header="Date of Birth" PlaceholderText="Enter Date of Birth" TextWrapping="Wrap" InputScope="DateDayNumber"/>
+                        <!--<TextBox x:Name="_DOB" Header="Date of Birth" PlaceholderText="Enter Date of Birth" TextWrapping="Wrap" InputScope="DateDayNumber"/>-->
+                        <TextBlock Text="Date of Birth" />
+                        <CalendarDatePicker x:Name="_DOB1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" PlaceholderText="Select a date" DateChanged="dateChanged"/>
                         <TextBlock Text="Gender" />
                         
                         <RadioButton x:Name="_Male" Content="Male" Checked="_Male_Checked" HorizontalAlignment="Left" Margin="0,0,216,0" Width="120" />
@@ -114,13 +124,17 @@
                         <TextBox x:Name="_Address" Header="Address" PlaceholderText="Enter Address" TextWrapping="Wrap" InputScope="Text"/>
 
                         <TextBox x:Name="_PhoneNumber" Header="Mobile Number" PlaceholderText="Enter mobile number" TextWrapping="Wrap" InputScope="Number"/>
+                        <!--<TextBlock x:Name="textBlock" TextWrapping="Wrap" Text="TextBlock"/>-->
+                        
+                       
                     </StackPanel>
                     <ListView x:Name="WishListView" Grid.Row="1"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch"
-                              ItemTemplate="{StaticResource WishListDataViews}">
+                              ItemTemplate="{StaticResource PersonalInfoDataViews}">
                         <RelativePanel.Below>pageStart</RelativePanel.Below>
                     </ListView>
+
                 </Grid>
             </PivotItem>
         </Pivot>

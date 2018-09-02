@@ -1,4 +1,9 @@
-﻿using System;
+﻿/**
+* @author Pablo Paramo
+*
+* @date - 27 Aug 2018
+*/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,9 +18,10 @@ namespace StartFinance.Models
         public int personalID { get; set; }
 
         [Unique]
-        public string firstName { get; set; }
+        public string firstNamo { get; set; }
         public string lastName { get; set; }
-        public DateTime DOB { get; set; }
+
+        public string DOB { get; set; }
 
         [NotNull]
         public string gender { get; set; }
@@ -24,6 +30,6 @@ namespace StartFinance.Models
         [NotNull]
         public string address { get; set; }
         [NotNull]
-        public string mobileNumber { get; set; }
+        public int mobileNumber { get; set; }
     }
 }
