@@ -19,9 +19,9 @@ namespace StartFinance.Models
         public string Location { get; set; }
 
         [NotNull]
-        public DateTime EventDate { get; set; }
+        public string EventDate { get; set; }
 
-        public TimeSpan StartTime { get; set; }
-        public TimeSpan EndTime { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
     }
 }

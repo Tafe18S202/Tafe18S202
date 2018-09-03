@@ -58,15 +58,35 @@ namespace StartFinance.Views
                 return;
             }
 
+            if(timStartTime.Time > timEndTime.Time)
+            {
+                await new MessageDialog("Start date must be before end date!").ShowAsync();
+                timStartTime.Focus(FocusState.Programmatic);
+                return;
+            }
+
             try
             {
+                string CDay = calEventDate.Date.Value.Day.ToString();
+                string CMonth = calEventDate.Date.Value.Month.ToString();
+                string CYear = calEventDate.Date.Value.Year.ToString();
+                string FinalDate = "" + CMonth + "/" + CDay + "/" + CYear;
+
+                string SHour = timStartTime.Time.Hours.ToString();
+                string SMin = timStartTime.Time.Minutes.ToString();
+                string FinalSTime = SHour + ":" + SMin;
+
+                string EHour = timEndTime.Time.Hours.ToString();
+                string EMin = timEndTime.Time.Minutes.ToString();
+                string FinalETime = EHour + ":" + EMin;
+
                 conn.Insert(new Appointments()
                 {
                     EventName = txtEventName.Text,
                     Location = txtLocation.Text,
-                    EventDate = calEventDate.Date.Value.Date.AddDays(1),
-                    StartTime = timStartTime.Time,
-                    EndTime = timEndTime.Time
+                    EventDate = FinalDate,
+                    StartTime = FinalSTime,
+                    EndTime = FinalETime
                 });
 
                 await new MessageDialog("Appointment Added", "Success").ShowAsync();
