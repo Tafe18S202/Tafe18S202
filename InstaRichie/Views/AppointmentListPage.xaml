@@ -9,7 +9,8 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="using:StartFinance.Views"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:vm="using:StartFinance.ViewModels" mc:Ignorable="d" Loaded="Page_Loaded">
+      xmlns:vm="using:StartFinance.ViewModels" xmlns:conv="using:StartFinance.ViewModels"
+      mc:Ignorable="d" Loaded="Page_Loaded">
 
     <Page.Resources>
         <DataTemplate x:Key="AppointmentList">
@@ -23,6 +24,7 @@
                 </StackPanel>
             </Grid>
         </DataTemplate>
+
     </Page.Resources>
 
     <Page.DataContext>

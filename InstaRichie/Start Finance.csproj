@@ -118,6 +118,9 @@
     <Compile Include="Views\AccountsPage.xaml.cs">
       <DependentUpon>AccountsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\AppointmentAddPage.xaml.cs">
+      <DependentUpon>AppointmentAddPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\AppointmentListPage.xaml.cs">
       <DependentUpon>AppointmentListPage.xaml</DependentUpon>
     </Compile>
@@ -187,6 +190,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="Views\AccountsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AppointmentAddPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
