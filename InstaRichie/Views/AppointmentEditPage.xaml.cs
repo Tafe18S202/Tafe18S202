@@ -16,33 +16,47 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace StartFinance.Views
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class AppointmentAddPage : Page
+    public sealed partial class AppointmentEditPage : Page
     {
         SQLiteConnection conn; // adding an SQLite connection
         string path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "Findata.sqlite");
 
-        public AppointmentAddPage()
+        Appointments appointment;
+
+        public AppointmentEditPage()
         {
             this.InitializeComponent();
 
             NavigationCacheMode = Windows.UI.Xaml.Navigation.NavigationCacheMode.Enabled;
             /// Initializing a database
             conn = new SQLite.Net.SQLiteConnection(new SQLite.Net.Platform.WinRT.SQLitePlatformWinRT(), path);
-            // Creating table
-            conn.CreateTable<Appointments>();
-            calEventDate.Date = DateTime.Now; // gets current date and time
-            timStartTime.Time = DateTime.Now.TimeOfDay;
-            timEndTime.Time = timStartTime.Time.Add(new TimeSpan(1, 0, 0));
         }
 
-        private async void AppBarButton_Click(object sender, RoutedEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            if (e.Parameter != null)
+            {
+                var p = Template10.Services.SerializationService.SerializationService.Json.Deserialize<int>(e.Parameter?.ToString());
+                int id = (int)p;
+                appointment = conn.Get<Appointments>(id);
+                txtEventName.Text = appointment.EventName;
+                txtLocation.Text = appointment.Location;
+                calEventDate.Date = DateTimeOffset.Parse(appointment.EventDate);
+                timStartTime.Time = TimeSpan.Parse(appointment.StartTime);
+                timEndTime.Time = TimeSpan.Parse(appointment.EndTime);
+            }
+        }
+
+        private async void Save_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtEventName.Text))
             {
@@ -58,7 +72,7 @@ namespace StartFinance.Views
                 return;
             }
 
-            if(timStartTime.Time > timEndTime.Time)
+            if (timStartTime.Time > timEndTime.Time)
             {
                 await new MessageDialog("Start date must be before end date!").ShowAsync();
                 timStartTime.Focus(FocusState.Programmatic);
@@ -80,16 +94,15 @@ namespace StartFinance.Views
                 string EMin = timEndTime.Time.Minutes.ToString();
                 string FinalETime = EHour + ":" + EMin;
 
-                conn.Insert(new Appointments()
-                {
-                    EventName = txtEventName.Text,
-                    Location = txtLocation.Text,
-                    EventDate = FinalDate,
-                    StartTime = FinalSTime,
-                    EndTime = FinalETime
-                });
+                appointment.EventName = txtEventName.Text;
+                appointment.Location = txtLocation.Text;
+                appointment.EventDate = FinalDate;
+                appointment.StartTime = FinalSTime;
+                appointment.EndTime = FinalETime;
 
-                await new MessageDialog("Appointment Added", "Success").ShowAsync();
+                conn.Update(appointment);
+
+                await new MessageDialog("Appointment Updated", "Success").ShowAsync();
 
                 Frame.Navigate(typeof(AppointmentListPage));
             }
@@ -102,5 +115,10 @@ namespace StartFinance.Views
                 }
             }
         }
-    }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(AppointmentListPage));
+        }
+    }        
 }

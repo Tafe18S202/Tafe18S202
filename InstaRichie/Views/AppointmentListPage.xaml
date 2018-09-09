@@ -71,8 +71,9 @@
 
             <!--  secondary commands  -->
             <controls:PageHeader.PrimaryCommands>
-                <!--<AppBarButton Icon="Add" Label="Add" Click="AddButton_Click" />-->
-                <AppBarButton Icon="Delete" Label="Delete" Click="DeleteButton_Click"/>
+                <AppBarButton Icon="Add" Label="Add" Click="AddButton_Click" />
+                <AppBarButton Icon="Edit" Label="Edit" Click="EditButton_Click"/>
+                <AppBarButton Icon="Delete" Label="Delete" Click="DeleteButton_Click"/>                
             </controls:PageHeader.PrimaryCommands>
         </controls:PageHeader>
 

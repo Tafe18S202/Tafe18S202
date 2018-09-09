@@ -69,6 +69,33 @@ namespace StartFinance.Views
             }
         }
 
+        private async void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int AppointmentSelection = ((Appointments)AppointmentList.SelectedItem).ID;
+                if (AppointmentSelection == 0)
+                {
+                    MessageDialog dialog = new MessageDialog("Not selected the Item", "Oops..!");
+                    await dialog.ShowAsync();
+                }
+                else
+                {
+                    ViewModel.NavigationService.Navigate(typeof(AppointmentEditPage), AppointmentSelection);
+                }
+            }
+            catch (NullReferenceException)
+            {
+                MessageDialog dialog = new MessageDialog("Not selected the Item", "Oops..!");
+                await dialog.ShowAsync();
+            }
+        }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(AppointmentAddPage));
+        }
+
         public void Results()
         {
             conn.CreateTable<Appointments>();
