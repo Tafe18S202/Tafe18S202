@@ -12,7 +12,7 @@ namespace StartFinance.Models
         [PrimaryKey][AutoIncrement]
         public int ShoppingItemID { get; set; }
         [NotNull]
-        public string ShopName { get; set; }
+        public string ShopName { get; set; } // This behaves as unique, not sure why yet
         [NotNull]
         public string NameOfItem { get; set; }
         [NotNull]

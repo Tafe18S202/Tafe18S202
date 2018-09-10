@@ -63,8 +63,17 @@ namespace StartFinance.Views
             ShoppingListView.ItemsSource = query1.ToList();
         }
 
+        private void _ShoppingDate_DateChanged_1(CalendarDatePicker sender, CalendarDatePickerDateChangedEventArgs args)
+        {
+            CalendarDatePicker calDate = sender as CalendarDatePicker;
+            string date = "";
+
+            date = "" + calDate.Date;
+        }
+
         private async void AddBarButton_Click_2(object sender, RoutedEventArgs e)
         {
+
             try
             {
                 if ((_ShopName.Text.ToString() == "") || (_ShoppingItemName.Text.ToString() == ""))
@@ -74,13 +83,20 @@ namespace StartFinance.Views
                 }
                 else
                 {
+                    CalendarDatePicker calDate = _ShoppingDate as CalendarDatePicker;
+                    string date = "";
+                    date = "" + calDate.Date;
+                    var tree = _ShoppingDate.Date;
+                    DateTime time = tree.Value.DateTime;
+                    var forDate = time.ToString("dd/MM/yyyy");
+
                     double TempMoney = Convert.ToDouble(_ShoppingPriceQuoted.Text);
                     conn.CreateTable<Models.ShoppingList>();
                     conn.Insert(new Models.ShoppingList // use different names next time - referenced the model instead for now.
                     {
                         ShopName = _ShopName.Text.ToString(),
                         NameOfItem = _ShoppingItemName.Text.ToString(),
-                        ShoppingDate = _ShoppingDate.Text.ToString(),
+                        ShoppingDate = forDate,
                         //ShoppingDate = _ShoppingDate.Date.Date, // TO DO, implement code for date picker
                         PriceQuoted = Double.Parse(_ShoppingPriceQuoted.Text.ToString()), // inside bracket for double
                     });
@@ -97,7 +113,7 @@ namespace StartFinance.Views
                 }
                 else if (ex is SQLiteException)
                 {
-                    MessageDialog dialog = new MessageDialog("Shopping List Name already exist, Try Different Name", "Oops..!");
+                    MessageDialog dialog = new MessageDialog("Shopping List Name already exist, Try Different Name", "Oops..!" + ex.Message);
                     await dialog.ShowAsync();
                 }
                 else
@@ -108,10 +124,42 @@ namespace StartFinance.Views
         }
 
         private async void DeleteItem_Click(object sender, RoutedEventArgs e)
-        {
+        {            
             try
             {
                 string AccSelection = ((Models.ShoppingList)ShoppingListView.SelectedItem).ShopName; // again, had to make it Models.ShoppingList - dont name things the same
+                if (AccSelection == "")
+                {
+                    MessageDialog dialog = new MessageDialog("An Item needs to be selected for removal.", "Oops..!");
+                    await dialog.ShowAsync();
+                }
+                else
+                {
+                    conn.CreateTable<Models.ShoppingList>();
+                    var query1 = conn.Table<Models.ShoppingList>();
+                    var query3 = conn.Query<Models.ShoppingList>("DELETE FROM ShoppingList WHERE ShopName ='" + AccSelection + "'");
+                    ShoppingListView.ItemsSource = query1.ToList();
+                }
+            }
+            catch (NullReferenceException)
+            {
+                MessageDialog dialog = new MessageDialog("[DELETE] Not selected the Item", "Oops..!");
+                await dialog.ShowAsync();
+            }
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            Results();
+        }
+
+
+        private async void EditBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            // TO DO - Google how to do
+            try
+            {
+                string AccSelection = ((Models.ShoppingList)ShoppingListView.SelectedItem).ShopName;
                 if (AccSelection == "")
                 {
                     MessageDialog dialog = new MessageDialog("Not selected the Item", "Oops..!");
@@ -131,11 +179,5 @@ namespace StartFinance.Views
                 await dialog.ShowAsync();
             }
         }
-
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            Results();
-        }
-
     }
 }

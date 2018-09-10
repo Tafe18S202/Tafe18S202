@@ -38,7 +38,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{Binding ShopName}" Padding="0,0,15,0"/>
                     <TextBlock Text="{Binding NameOfItem}" Padding="0,0,15,0"/>
-                    <!--<TextBlock Text="{Binding ShoppingDate}" Padding="0,0,15,0"/> FIX this so list doesn't error out-->
+                    <TextBlock Text="{Binding ShoppingDate}" Padding="0,0,15,0"/>
                     <TextBlock Text="{Binding PriceQuoted}" Padding="0,0,15,0"/>
                 </StackPanel>
             </Grid>
@@ -101,6 +101,7 @@
             <!--primary commands-->
             <controls:PageHeader.PrimaryCommands>
                 <AppBarButton Icon="Add" Label="Add ShoppingList" Click="AddBarButton_Click_2"/>
+                <AppBarButton Icon="Edit" Label="Edit ShoppingList" Click="EditBarButton_Click"/>
                 <AppBarButton Icon="Delete" Label="Delete ShoppingList" Click="DeleteItem_Click"/>
             </controls:PageHeader.PrimaryCommands>
         </controls:PageHeader>
@@ -121,7 +122,7 @@
                         <TextBox x:Name="_ShopName" PlaceholderText="Lumia Phones" Header="Shop Name"/>
                         <TextBox x:Name="_ShoppingItemName" Header="Item Name" PlaceholderText="Lumia Phone" TextWrapping="Wrap"/>
                         <TextBox x:Name="_ShoppingPriceQuoted" Header="Price Quoted" PlaceholderText="Lumia Phone" TextWrapping="Wrap" InputScope="Number"/>
-                        <TextBox x:Name="_ShoppingDate" PlaceholderText="12/12/12" Header="Shopping Date"/>
+                        <CalendarDatePicker x:Name="_ShoppingDate" PlaceholderText="12/12/12" DateChanged="_ShoppingDate_DateChanged_1" Header="Shopping Date"/>
                         <!--<DatePicker x:Name="_ShoppingDate" Header="Shopping Date" />-->
                     </StackPanel>
                     <ListView x:Name="ShoppingListView" Grid.Row="1"
