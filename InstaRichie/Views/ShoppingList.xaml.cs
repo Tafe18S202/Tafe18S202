@@ -167,9 +167,25 @@ namespace StartFinance.Views
                 }
                 else
                 {
+                    _ShopName.Text = ((Models.ShoppingList)ShoppingListView.SelectedItem).ShopName;
+                    _ShoppingItemName.Text = ((Models.ShoppingList)ShoppingListView.SelectedItem).NameOfItem;
+                    _ShoppingPriceQuoted.Text = ((Models.ShoppingList)ShoppingListView.SelectedItem).PriceQuoted.ToString();
+                    //_ShoppingDate.Date = ((Models.ShoppingList)ShoppingListView.SelectedItem).ShoppingDate;
+
+                    //CalendarDatePicker calDate = _ShoppingDate as CalendarDatePicker;
+                    //string date = "";
+                    //date = "" + calDate.Date;
+                    //var tree = _ShoppingDate.Date;
+                    //DateTime time = tree.Value.DateTime;
+                    //var forDate = time.ToString("dd/MM/yyyy");
+
+                    // --- Populated the list with selected values - need to add amend button OR make a new form for the editing <- probably this
+
                     conn.CreateTable<Models.ShoppingList>();
                     var query1 = conn.Table<Models.ShoppingList>();
-                    var query3 = conn.Query<Models.ShoppingList>("DELETE FROM WishList WHERE WishName ='" + AccSelection + "'");
+                    //var query3 = conn.Query<Models.ShoppingList>("UPDATE ShoppingList SET ShopName ='" + _ShopName + "'" + ", NameOfItem = '" + _ShoppingItemName +
+                    //    //", ShoppingDate = '" + forDate + "'" + 
+                    //    ", PriceQuoted = '" + _ShoppingPriceQuoted + "WHERE ShopName =" + AccSelection + "'");
                     ShoppingListView.ItemsSource = query1.ToList();
                 }
             }
