@@ -10,7 +10,7 @@ Custom CSS by PABLO PARAMO
 #about {
 	padding-top: 60px;
 	min-height: 600px;
-	background-color: #ff9b0017;
+	background-color: #ff9b0017!important;
 	text-align: center;
 }
 
