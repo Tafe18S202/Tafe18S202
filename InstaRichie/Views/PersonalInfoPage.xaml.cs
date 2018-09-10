@@ -23,6 +23,8 @@ using StartFinance.Models;
 using Windows.UI.Popups;
 using SQLite.Net;
 
+
+
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace StartFinance.Views
@@ -55,8 +57,9 @@ namespace StartFinance.Views
         {
             conn.CreateTable<PersonalInfo>();
             var query1 = conn.Table<PersonalInfo>();
-            WishListView.ItemsSource = query1.ToList();
-            
+            PersonalInfoListView.ItemsSource = query1.ToList();
+            PersonalInfoListView.SelectedItem = 0;
+
 
         }
 
@@ -77,73 +80,66 @@ namespace StartFinance.Views
                 }
                 else
                 {
-                    
+
                     string Name = _FirstName.Text;
                     string LastName = _LastName.Text;
-                    //CalendarDatePicker DOB = new CalendarDatePicker();
-                    
-                    //DOB = _DOB1;
-                    //_DOB1.GetValue.ToString("dd-MM-yy");
-                    //DOB.ToString("dd-MM-yyyy");
-                    //Gender added on top
-
                     string email = _Email.Text;
                     string address = _Address.Text;
-                    int phoneNumber = Convert.ToInt16(_PhoneNumber.Text);
-                    
-                    
+                    int phoneNumber = Convert.ToInt32(_PhoneNumber.Text);
 
 
+                    //Check if there is already a record - if true, delete so it can be recorded again as an updated record.
+                    if (PersonalInfoListView.Items.Count != 0)
+                    {
+                        try
+                        {
+                            string AccSelection = ((PersonalInfo)PersonalInfoListView.SelectedItem).firstName;
+                            if (AccSelection == null)
+                            {
+                                //MessageDialog dialog = new MessageDialog("Not selected the Item", "Oops..!");
+                                //await dialog.ShowAsync();
+                            }
+                            else
+                            {
+                                conn.CreateTable<PersonalInfo>();
+                                var query1 = conn.Table<PersonalInfo>();
+                                var query3 = conn.Query<PersonalInfo>("DELETE FROM PersonalInfo WHERE FirstName ='" + AccSelection + "'");
+                                PersonalInfoListView.ItemsSource = query1.ToList();
+                            }
+                        }
+                        catch (NullReferenceException)
+                        {
+                            //MessageDialog dialog = new MessageDialog("Not selected the Item", "Oops..!");
+                            // await dialog.ShowAsync();
+                        }
+                    }
 
 
-                    //double TempMoney = Convert.ToDouble(MoneyIn.Text);
                     conn.CreateTable<PersonalInfo>();
-                    conn.Insert(new PersonalInfo { firstNamo = Name, lastName = LastName, DOB = DOB, gender = Gender, email = email,  address = address, mobileNumber = phoneNumber});
+                    conn.Insert(new PersonalInfo { firstName = Name, lastName = LastName, DOB = DOB, gender = Gender, email = email, address = address, mobileNumber = phoneNumber });
                     // Creating table
                     Results();
-                   
-                    _FirstName.IsReadOnly = true;
-                    _FirstName.IsHitTestVisible = false;
-
-                    _LastName.IsReadOnly = true;
-                    _LastName.IsHitTestVisible = false;
-
-                    _DOB1.IsEnabled = false;
-                    _DOB1.IsGroupLabelVisible = false;
-                    _DOB1.IsHitTestVisible = false;
-                    _DOB1.Background.Opacity = 0;
-
-                    _Male.IsHitTestVisible = false;
-                    _Male.IsEnabled = false;
-
-                    _Female.IsHitTestVisible = false;
-                    _Female.IsEnabled = false;
-
-                    
-
-                    
-
-                    _Email.IsReadOnly = true;
-                    _Email.IsHitTestVisible = false;
-
-                    _Address.IsReadOnly = true;
-                    _Address.IsHitTestVisible = false;
 
 
-                    _PhoneNumber.IsHitTestVisible = false;
-                    _PhoneNumber.IsReadOnly = true;
-
-
-
-
-                    _FirstName.BorderBrush.Opacity = 0;
-                    //SQLiteCommand q = new SQLiteCommand(@"Select FirstNamo from PersonalInfo;");
-                    var que = conn.Query<PersonalInfo>("Select FirstNamo from PersonalInfo");
-                    MessageDialog dialog = new MessageDialog(que.ToString() + " Thanks Your Personal data has been saved!");
+                    MessageDialog dialog = new MessageDialog("Thanks, " + _FirstName.Text + ". Your Personal data has been saved!");
                     await dialog.ShowAsync();
 
+                    //Reset form
+                    _FirstName.Text = "";
 
+                    _LastName.Text = "";
 
+                    _DOB1.Date = null;
+
+                    _Male.IsChecked = false;
+
+                    _Female.IsChecked = false;
+
+                    _Email.Text = "";
+
+                    _Address.Text = "";
+
+                    _PhoneNumber.Text = "";
 
                 }
             }
@@ -156,7 +152,7 @@ namespace StartFinance.Views
                 }
                 else if (ex is SQLiteException)
                 {
-                    MessageDialog dialog = new MessageDialog("Name already exist, Try Different Name", "Oops..!");
+                    MessageDialog dialog = new MessageDialog("Personal Data already recorded, Click 'Modify' to change your data.");
                     await dialog.ShowAsync();
                 }
                 else
@@ -170,18 +166,18 @@ namespace StartFinance.Views
         {
             try
             {
-                string AccSelection = ((WishList)WishListView.SelectedItem).WishName;
-                if (AccSelection == "")
+                string AccSelection = ((PersonalInfo)PersonalInfoListView.SelectedItem).firstName;
+                if (AccSelection == null)
                 {
                     MessageDialog dialog = new MessageDialog("Not selected the Item", "Oops..!");
                     await dialog.ShowAsync();
                 }
                 else
                 {
-                    conn.CreateTable<WishList>();
-                    var query1 = conn.Table<WishList>();
-                    var query3 = conn.Query<WishList>("DELETE FROM WishList WHERE WishName ='" + AccSelection + "'");
-                    WishListView.ItemsSource = query1.ToList();
+                    conn.CreateTable<PersonalInfo>();
+                    var query1 = conn.Table<PersonalInfo>();
+                    var query3 = conn.Query<PersonalInfo>("DELETE FROM PersonalInfo WHERE firstName ='" + AccSelection + "'");
+                    PersonalInfoListView.ItemsSource = query1.ToList();
                 }
             }
             catch (NullReferenceException)
@@ -203,15 +199,43 @@ namespace StartFinance.Views
             MessageDialog dialog = new MessageDialog("The gender you selecected is: " + Gender);
         }
 
-        private void ModifyPersonalInfo_Click(object sender, RoutedEventArgs e)
+        private async void ModifyPersonalInfo_Click(object sender, RoutedEventArgs e)
         {
+            MessageDialog dialog = new MessageDialog("Please modify any field and then save your changes.");
+            await dialog.ShowAsync();
+
+            PersonalInfoListView.SelectedIndex = 0;
+            //Reactivate texboxes
+
+
+            _FirstName.Text = ((PersonalInfo)PersonalInfoListView.SelectedItem).firstName.ToString();
+            _LastName.Text = ((PersonalInfo)PersonalInfoListView.SelectedItem).lastName.ToString();
+
+            Gender = ((PersonalInfo)PersonalInfoListView.SelectedItem).gender.ToString();
+
+            if (Gender == "Male")
+            {
+                _Male.IsChecked = true;
+            }
+            else
+            {
+                _Female.IsChecked = true;
+            }
+
+            _Email.Text = ((PersonalInfo)PersonalInfoListView.SelectedItem).email.ToString();
+            _Address.Text = ((PersonalInfo)PersonalInfoListView.SelectedItem).address;
+            _PhoneNumber.Text = Convert.ToString(((PersonalInfo)PersonalInfoListView.SelectedItem).mobileNumber);
+            _DOB1.Date = Convert.ToDateTime(((PersonalInfo)PersonalInfoListView.SelectedItem).DOB);
+
 
         }
 
+
         private void dateChanged(CalendarDatePicker sender, CalendarDatePickerDateChangedEventArgs args)
         {
-            if (args.NewDate != null) {
-               
+            if (args.NewDate != null)
+            {
+
                 var date = _DOB1.Date;
                 DateTime time = date.Value.DateTime;
                 var formatedtime = time.ToString("dd/MM/yyyy");

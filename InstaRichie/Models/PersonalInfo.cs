@@ -14,11 +14,11 @@ namespace StartFinance.Models
 {
     class PersonalInfo
     {
-        [PrimaryKey, AutoIncrement]
+        [PrimaryKey /*, AutoIncrement*/]
         public int personalID { get; set; }
 
         [Unique]
-        public string firstNamo { get; set; }
+        public string firstName { get; set; }
         public string lastName { get; set; }
 
         public string DOB { get; set; }
