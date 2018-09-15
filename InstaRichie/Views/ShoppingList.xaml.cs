@@ -58,9 +58,20 @@ namespace StartFinance.Views
 
         public void Results()
         {
+            _ShopName.PlaceholderText = _ShopName.PlaceholderText;
+            _ShopName.Text = "";
+            _ShoppingItemName.PlaceholderText = _ShoppingItemName.PlaceholderText;
+            _ShoppingItemName.Text = "";
+            _ShoppingPriceQuoted.PlaceholderText = _ShoppingPriceQuoted.PlaceholderText;
+            _ShoppingPriceQuoted.Text = "";
+            _ShoppingDate.PlaceholderText = _ShoppingDate.PlaceholderText;
+            DateTime time = DateTime.Now;
+            _ShoppingDate.Date = time;
+
             conn.CreateTable<Models.ShoppingList>(); // Do not name things the same name!!!
             var query1 = conn.Table<Models.ShoppingList>();
             ShoppingListView.ItemsSource = query1.ToList();
+
         }
 
         private void _ShoppingDate_DateChanged_1(CalendarDatePicker sender, CalendarDatePickerDateChangedEventArgs args)
@@ -124,9 +135,10 @@ namespace StartFinance.Views
         }
 
         private async void DeleteItem_Click(object sender, RoutedEventArgs e)
-        {            
+        {
             try
             {
+                int IDSelection = ((Models.ShoppingList)ShoppingListView.SelectedItem).ShoppingItemID;
                 string AccSelection = ((Models.ShoppingList)ShoppingListView.SelectedItem).ShopName; // again, had to make it Models.ShoppingList - dont name things the same
                 if (AccSelection == "")
                 {
@@ -137,13 +149,16 @@ namespace StartFinance.Views
                 {
                     conn.CreateTable<Models.ShoppingList>();
                     var query1 = conn.Table<Models.ShoppingList>();
-                    var query3 = conn.Query<Models.ShoppingList>("DELETE FROM ShoppingList WHERE ShopName ='" + AccSelection + "'");
+                    var query3 = conn.Query<Models.ShoppingList>("DELETE FROM ShoppingList WHERE ShoppingItemID ='" + IDSelection + "'");
+
+                    //UPDATE: Below problem has been fixed.
+                    //this needs to delete the id associated with the selected shopName - currently deletes all items with that shopName ***FIX TO DO***
                     ShoppingListView.ItemsSource = query1.ToList();
                 }
             }
             catch (NullReferenceException)
             {
-                MessageDialog dialog = new MessageDialog("[DELETE] Not selected the Item", "Oops..!");
+                MessageDialog dialog = new MessageDialog("You have not selected an Item to DELETE.", "Oops..!");
                 await dialog.ShowAsync();
             }
         }
@@ -156,21 +171,35 @@ namespace StartFinance.Views
 
         private async void EditBarButton_Click(object sender, RoutedEventArgs e)
         {
+
             // TO DO - Google how to do
             try
             {
+                int IDSelection = ((Models.ShoppingList)ShoppingListView.SelectedItem).ShoppingItemID;
                 string AccSelection = ((Models.ShoppingList)ShoppingListView.SelectedItem).ShopName;
                 if (AccSelection == "")
                 {
-                    MessageDialog dialog = new MessageDialog("Not selected the Item", "Oops..!");
+                    MessageDialog dialog = new MessageDialog("You have not selected an Item.", "Oops..!");
                     await dialog.ShowAsync();
                 }
                 else
                 {
+                    //Enable the appbar button to save the edit details, disable ability to delete or add items whilst editing
+                    saveButAppBar.IsEnabled = true;
+                    cancelButAppBar.IsEnabled = true;
+                    deleteButAppBar.IsEnabled = false;
+                    addButAppBar.IsEnabled = false;
+                    editButAppBar.IsEnabled = false;
+
+                    string iDate = ((Models.ShoppingList)ShoppingListView.SelectedItem).ShoppingDate;
+                    DateTime dtDate;
+                    DateTime.TryParse(iDate, out dtDate);
+
                     _ShopName.Text = ((Models.ShoppingList)ShoppingListView.SelectedItem).ShopName;
                     _ShoppingItemName.Text = ((Models.ShoppingList)ShoppingListView.SelectedItem).NameOfItem;
                     _ShoppingPriceQuoted.Text = ((Models.ShoppingList)ShoppingListView.SelectedItem).PriceQuoted.ToString();
                     //_ShoppingDate.Date = ((Models.ShoppingList)ShoppingListView.SelectedItem).ShoppingDate;
+                    _ShoppingDate.Date = dtDate;
 
                     //CalendarDatePicker calDate = _ShoppingDate as CalendarDatePicker;
                     //string date = "";
@@ -183,17 +212,87 @@ namespace StartFinance.Views
 
                     conn.CreateTable<Models.ShoppingList>();
                     var query1 = conn.Table<Models.ShoppingList>();
+
                     //var query3 = conn.Query<Models.ShoppingList>("UPDATE ShoppingList SET ShopName ='" + _ShopName + "'" + ", NameOfItem = '" + _ShoppingItemName +
                     //    //", ShoppingDate = '" + forDate + "'" + 
                     //    ", PriceQuoted = '" + _ShoppingPriceQuoted + "WHERE ShopName =" + AccSelection + "'");
-                    ShoppingListView.ItemsSource = query1.ToList();
+                    //ShoppingListView.ItemsSource = query1.ToList();
                 }
             }
             catch (NullReferenceException)
             {
-                MessageDialog dialog = new MessageDialog("Not selected the Item", "Oops..!");
+                MessageDialog dialog = new MessageDialog("You have not selected an Item to EDIT.", "Oops..!");
                 await dialog.ShowAsync();
             }
+        }
+
+        private async void saveButAppBar_Click(object sender, RoutedEventArgs e)
+        {
+            //Disable the save edit details appBar button, re-enable add and delete buttons
+            saveButAppBar.IsEnabled = false;
+            cancelButAppBar.IsEnabled = false;
+            deleteButAppBar.IsEnabled = true;
+            addButAppBar.IsEnabled = true;
+            editButAppBar.IsEnabled = true;
+
+            try
+            {
+                int IDSelection = ((Models.ShoppingList)ShoppingListView.SelectedItem).ShoppingItemID;
+                string AccSelection = ((Models.ShoppingList)ShoppingListView.SelectedItem).ShopName;
+                if (AccSelection == "")
+                {
+                    MessageDialog dialog = new MessageDialog("You have not selected an Item to UPDATE.", "Oops..!");
+                    await dialog.ShowAsync();
+                }
+                else
+                {
+                    CalendarDatePicker calDate = _ShoppingDate as CalendarDatePicker;
+                    string date = "";
+                    date = "" + calDate.Date;
+                    var tree = _ShoppingDate.Date;
+                    DateTime time = tree.Value.DateTime;
+                    var forDate = time.ToString("dd/MM/yyyy");
+
+                    string sName = _ShopName.Text.ToString();
+                    string sItem = _ShoppingItemName.Text.ToString();
+                    double sPrice = Double.Parse(_ShoppingPriceQuoted.Text.ToString());
+                    string sDate = forDate;
+
+                    var query1 = conn.Table<Models.ShoppingList>();
+                    var query3 = conn.Query<Models.ShoppingList>("UPDATE ShoppingList SET ShopName ='" + sName + "'" + ", NameOfItem = '" + sItem + "'" + ", ShoppingDate = '" + sDate + "'" + ", PriceQuoted = '" + sPrice + "' WHERE ShoppingItemID = '" + IDSelection + "'");
+
+                    //Not right code
+                    //var query1 = conn.Table<Models.ShoppingList>();
+                    //var query2 = conn.Query<Models.ShoppingList>("UPDATE ShoppingList SET ShopName ='" + sName + "'" + ", NameOfItem = '" + sItem + "'");
+
+                    //not sure if this belwo is needed
+                    //ShoppingListView.ItemsSource = query1.ToList();
+
+                    //Ignore below code, for reference only
+                    //((Models.ShoppingList)ShoppingListView.SelectedItem).ShopName = _ShopName.Text;
+                    //((Models.ShoppingList)ShoppingListView.SelectedItem).ShopName = sName;
+
+                    Results();
+
+                }
+            }
+
+            catch (NullReferenceException)
+            {
+                MessageDialog dialog = new MessageDialog("Database ERROR.", "Oops..!");
+                await dialog.ShowAsync();
+            }
+
+        }
+
+        private void cancelButAppBar_Click(object sender, RoutedEventArgs e)
+        {
+            saveButAppBar.IsEnabled = false;
+            cancelButAppBar.IsEnabled = false;
+            deleteButAppBar.IsEnabled = true;
+            addButAppBar.IsEnabled = true;
+            editButAppBar.IsEnabled = true;
+            Results();
         }
     }
 }
