@@ -1,6 +1,24 @@
 /*
 Custom CSS by PABLO PARAMO
 */
+body {
+	opacity: 1;
+	animation: opacity 3s;
+}
+
+@keyframes opacity {
+    0% {
+      opacity: 0;
+      
+    }
+	100% {
+      opacity: 1;
+      
+    }
+
+}
+
+
 .bg-light {
     background-color: rgba(255, 155, 0, 1)!important;
 	font-weight: bold;
@@ -54,28 +72,53 @@ footer {
 	background-color: rgba(255, 155, 0, 1)!important;
 }
 
-footer
-{
+
+.highlight {
+  display: block;
+  position: relative;
+  background-position: center;
+  height: 800px;
+  overflow: hidden;
+  position: relative;
 }
 
-@keyframes zoom {
-  0%   { background-size: 100% auto; }
-  100% { background-size: 110% auto; }
+.content {
+  min-height: 800px;
+  height: 800px;
 }
 
-.parallax {
-    /* The image used */
-    background-image: url("../images/bg.jpg");
-    animation: zoom 10s linear;
-
-    /* Set a specific height */
-    min-height: 800px; 
-
-    /* Create the parallax scrolling effect */
+.parallax{
+  background-image: url("../images/bg.jpg");
+  width: 100%;
+  height: 100%;
+  transform: scale(1.2);
+  animation: zoomin 20s;
+  /* Create the parallax scrolling effect */
     background-attachment: fixed;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+@keyframes zoomin {
+    0% {
+      opacity: 0;
+      background-size: cover;
+      transform: scale(1);
+    }
+    5% {
+      opacity: 1;
+    }
+    98% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
 }
 
 .footer-above {
