@@ -59,14 +59,14 @@ footer
 }
 
 @keyframes zoom {
-  0%   { background-size: 90% auto; }
-  100% { background-size: 140% auto; }
+  0%   { background-size: 100% auto; }
+  100% { background-size: 110% auto; }
 }
 
 .parallax {
     /* The image used */
     background-image: url("../images/bg.jpg");
-    animation: zoom 4s linear infinite;
+    animation: zoom 10s linear;
 
     /* Set a specific height */
     min-height: 800px; 
