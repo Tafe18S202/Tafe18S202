@@ -99,6 +99,7 @@
                 </StackPanel>
             </Controls:HamburgerButtonInfo>
 
+            
             <!--  Personal Info button  -->
             <Controls:HamburgerButtonInfo ClearHistory="True" PageType="views:PersonalInfoPage" 
                                           AutomationProperties.Name="Jerry"
@@ -122,6 +123,42 @@
                                Text="Contact Details" />
             </StackPanel>
         </Controls:HamburgerButtonInfo>
+
+
+            <!--  Appointments button  -->
+            <Controls:HamburgerButtonInfo ClearHistory="True" PageType="views:AppointmentListPage" 
+                                          AutomationProperties.Name="Jerry"
+                                          >
+                <StackPanel Orientation="Horizontal">
+                    <SymbolIcon Width="48" Height="48"
+                		Symbol="CalendarDay" />
+                    <TextBlock Margin="12,0,0,0" VerticalAlignment="Center"
+                               Text="Appointments" />
+                </StackPanel>
+            </Controls:HamburgerButtonInfo>
+            
+            <Controls:HamburgerButtonInfo ClearHistory="True" PageType="views:AppointmentAddPage" 
+                                          AutomationProperties.Name="Jerry"
+                                          >
+                <StackPanel Orientation="Horizontal">
+                    <SymbolIcon Width="48" Height="48"
+                		Symbol="Add" />
+                    <TextBlock Margin="12,0,0,0" VerticalAlignment="Center"
+                               Text="Add Appointment" />
+                </StackPanel>
+            </Controls:HamburgerButtonInfo>
+            
+                        <!--  Shop List button  -->
+            <Controls:HamburgerButtonInfo ClearHistory="True" PageType="views:ShoppingList" 
+                                          AutomationProperties.Name="Jerry"
+                                          >
+                <StackPanel Orientation="Horizontal">
+                    <SymbolIcon Width="48" Height="48"
+                		Symbol="Shop" />
+                    <TextBlock Margin="12,0,0,0" VerticalAlignment="Center"
+                               Text="Shopping List" />
+                </StackPanel>
+            </Controls:HamburgerButtonInfo>
 
         </Controls:HamburgerMenu.PrimaryButtons>
 
