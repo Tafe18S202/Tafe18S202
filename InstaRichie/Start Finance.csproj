@@ -22,6 +22,7 @@
     <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
+    <PackageCertificateThumbprint>7BF82228E1DDDFDF6874836128680F4F0FCC7297</PackageCertificateThumbprint>
     <PackageCertificateThumbprint>C1EB734639326850A2F2C95B1B59AE7D8771A298</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
@@ -107,6 +108,7 @@
     <Compile Include="Models\Assets.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Debt.cs" />
+    <Compile Include="Models\ShoppingList.cs" />
     <Compile Include="Models\PersonalInfo.cs" />
     <Compile Include="Models\Transactions.cs" />
     <Compile Include="Models\WishList.cs" />
@@ -154,6 +156,9 @@
     </Compile>
     <Compile Include="Views\Shell.xaml.cs">
       <DependentUpon>Shell.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ShoppingList.xaml.cs">
+      <DependentUpon>ShoppingList.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Splash.xaml.cs">
       <DependentUpon>Splash.xaml</DependentUpon>
@@ -245,6 +250,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Shell.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ShoppingList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
